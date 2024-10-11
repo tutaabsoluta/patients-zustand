@@ -6,13 +6,14 @@ export const PatientForm = () => {
 
   const addPatient = usePatientStore( state => state.addPatient );
 
-  const { register, handleSubmit,formState: { errors } } = useForm();
+  const { register, handleSubmit, formState: { errors }, reset } = useForm();
 
   // Obtener addPatient del Store
 
 
   const registerPatient = ( data ) => {
-    addPatient(data)
+    addPatient(data);
+    reset();
   };
 
   return (
@@ -127,3 +128,5 @@ export const PatientForm = () => {
     </div>
   );
 };
+
+// Aqui no se genera el id, la funcion toma la data pero la lleva al store, ahi es que se genera el id
