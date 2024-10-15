@@ -1,10 +1,17 @@
+import { toast } from 'react-toastify';
 import { usePatientStore } from "../store/store";
 import { PatientDetailItem } from "./PatientDetailItem";
+
 
 export const PatientDetail = ({ patient }) => {
 
   const deletePatient = usePatientStore((state) => state.deletePatient);
   const getPatientById = usePatientStore((state) => state.getPatientById); 
+
+  const handleDelete = () => {
+    deletePatient( patient.id )
+    toast.error('Paciente Eliminado Correctamente')
+  }
 
 
   return (
@@ -28,7 +35,7 @@ export const PatientDetail = ({ patient }) => {
         <button
           className="bg-red-600 py-2 px-10 text-white font-bold rounded-md hover:bg-red-800 duration-300 uppercase"
           type="button"
-          onClick={() => deletePatient( patient.id )}
+          onClick={() => handleDelete()}
         >
           Eliminar
         </button>

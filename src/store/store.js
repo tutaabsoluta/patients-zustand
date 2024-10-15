@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { devtools } from 'zustand/middleware'
+import { createJSONStorage, devtools, persist } from 'zustand/middleware'
 import { v4 as uuidv4 } from 'uuid';
 
 // Agregar un id al paciente para poder agregarlo al array
@@ -7,7 +7,10 @@ const createPatient = (patient) => ({
   ...patient, id: uuidv4()
 });
 
-export const usePatientStore = create()(devtools((set) => ({
+export const usePatientStore = create()(
+  devtools(
+    persist(
+    (set) => ({
 
   // Estado inicial
   patients: [],
@@ -53,6 +56,9 @@ export const usePatientStore = create()(devtools((set) => ({
     }));
   }
 
+}),{
+  name:'patient-storage',
+  storage: createJSONStorage(() => localStorage) // LocalStorage es el default, es para ver
 })));
 
 //*1 No requiere state porque escribimos directamente en activeId, no ocupamos un valor
@@ -60,6 +66,6 @@ export const usePatientStore = create()(devtools((set) => ({
 // Accion editar:
 // Primero hay que identificar el registro por editar
 
-// updatePatient: iteramos sobre los pacientes e identificamos el que estamos editando. Una vezx que lo estamos editando vamos a almacenar lo que hay en data, lo que se pasa del form y sino para no perder la info que teniamos retornamos los otros pacientes.
-
 // Zustand permite modificar varios state, de modo que luego regresamos activeId a un string vacio
+
+// updatePatient: recorre la lista de pacientes y actualiza el paciente cuyo id coincide con activeId. Sustituye sus datos por los nuevos pasados en data y al final limpia activeId. el ...data esparce los datos nuevos que se pasaron en la llamada de la funcion

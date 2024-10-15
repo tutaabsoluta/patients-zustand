@@ -1,45 +1,39 @@
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 import { Error } from "../components";
 import { usePatientStore } from "../store/store";
-import { useEffect } from "react";
 
 export const PatientForm = () => {
-
-  // React Hook Form
   const { register, setValue, handleSubmit, formState: { errors }, reset } = useForm();
 
-  // Store
-  const addPatient = usePatientStore( state => state.addPatient );
-  const activeId = usePatientStore( state => state.activeId );
-  const patients = usePatientStore( state => state.patients );
-  const updatePatient = usePatientStore( state => state.updatePatient );
-
+  const addPatient = usePatientStore((state) => state.addPatient);
+  const activeId = usePatientStore((state) => state.activeId);
+  const patients = usePatientStore((state) => state.patients);
+  const updatePatient = usePatientStore((state) => state.updatePatient);
 
   useEffect(() => {
-    if( activeId ) {
-      const activePatient = patients.filter( patient => patient.id === activeId )[0]
-
-      const { name, caretaker, email, date, symptoms } = activePatient
-      setValue('name',name)
-      setValue('caretaker',caretaker)
-      setValue('email',email)
-      setValue('date',date)
-      setValue('symptoms',symptoms)
+    if (activeId) {
+      const activePatient = patients.find((patient) => patient.id === activeId);
+      const { name, caretaker, email, date, symptoms } = activePatient;
+      setValue("name", name);
+      setValue("caretaker", caretaker);
+      setValue("email", email);
+      setValue("date", date);
+      setValue("symptoms", symptoms);
     }
-  }, [ activeId ])
+  }, [activeId]);
 
-  // Form Submit function
-  const registerPatient = ( data ) => {
-
-    if ( activeId ) {
-      updatePatient( data )
+  const registerPatient = (data) => {
+    if (activeId) {
+      updatePatient(data);
+      toast.success("Paciente Actualizado Correctamente");
     } else {
-      addPatient( data )
+      addPatient(data);
+      toast.success("Paciente Registrado Correctamente");
     }
     reset();
   };
-
-  
 
   return (
     <div className="md:w-1/2 lg:w-2/5 mx-5">
@@ -53,7 +47,7 @@ export const PatientForm = () => {
       <form
         className="bg-white shadow-md rounded-lg py-10 px-5 mb-10"
         noValidate
-        onSubmit={ handleSubmit( registerPatient ) }
+        onSubmit={handleSubmit(registerPatient)}
       >
         <div className="mb-5">
           <label htmlFor="name" className="text-sm uppercase font-bold">
@@ -61,20 +55,15 @@ export const PatientForm = () => {
           </label>
           <input
             id="name"
-            className="w-full p-3  border border-gray-100"
+            className={`w-full p-3 border ${errors.name ? 'border-red-600' : 'border-gray-100'} peer`}
             type="text"
             placeholder="Nombre del Paciente"
             {...register("name", {
               required: "El nombre del Paciente es obligatorio",
-              // minLength: {
-              //   value: 8,
-              //   message: 'El nombre debe tener minimo dos caracteres'
-              // },
               maxLength: 8,
             })}
           />
-          {errors.name && <Error>{errors.name.message}</Error>}
-          {/* { errors.minLength && <Error>{ errors.minLength.message }</Error> } */}
+          <Error hasError={!!errors.name}>{errors.name?.message}</Error>
         </div>
 
         <div className="mb-5">
@@ -83,14 +72,14 @@ export const PatientForm = () => {
           </label>
           <input
             id="caretaker"
-            className="w-full p-3  border border-gray-100"
+            className={`w-full p-3 border ${errors.caretaker ? 'border-red-600' : 'border-gray-100'} peer`}
             type="text"
             placeholder="Nombre del Propietario"
             {...register("caretaker", {
               required: "El nombre del propietario es obligatorio",
             })}
           />
-          {errors.caretaker && <Error>{ errors.caretaker.message }</Error>}
+          <Error hasError={!!errors.caretaker}>{errors.caretaker?.message}</Error>
         </div>
 
         <div className="mb-5">
@@ -99,7 +88,7 @@ export const PatientForm = () => {
           </label>
           <input
             id="email"
-            className="w-full p-3  border border-gray-100"
+            className={`w-full p-3 border ${errors.email ? 'border-red-600' : 'border-gray-100'} peer`}
             type="email"
             placeholder="Email de Registro"
             {...register("email", {
@@ -109,9 +98,8 @@ export const PatientForm = () => {
                 message: "Email No Válido",
               },
             })}
-
           />
-            {errors.email && <Error>{errors.email.message}</Error>}
+          <Error hasError={!!errors.email}>{errors.email?.message}</Error>
         </div>
 
         <div className="mb-5">
@@ -120,13 +108,13 @@ export const PatientForm = () => {
           </label>
           <input
             id="date"
-            className="w-full p-3  border border-gray-100"
+            className={`w-full p-3 border ${errors.date ? 'border-red-600' : 'border-gray-100'} peer`}
             type="date"
-            { ...register( 'date', {
-              required: 'Elige una fecha'
-            } ) }
+            {...register("date", {
+              required: "Elige una fecha",
+            })}
           />
-          { errors.date && <Error>{ errors.date.message }</Error> }
+          <Error hasError={!!errors.date}>{errors.date?.message}</Error>
         </div>
 
         <div className="mb-5">
@@ -135,27 +123,21 @@ export const PatientForm = () => {
           </label>
           <textarea
             id="symptoms"
-            className="w-full p-3  border border-gray-100"
+            className={`w-full p-3 border ${errors.symptoms ? 'border-red-600' : 'border-gray-100'} peer`}
             placeholder="Síntomas del paciente"
-            { ...register( 'symptoms', {
-              required:'Describe los sintomas del Paciente'
-            } ) }
+            {...register("symptoms", {
+              required: "Describe los síntomas del Paciente",
+            })}
           ></textarea>
-          { errors.symptoms && <Error>{ errors.symptoms.message }</Error> }
+          <Error hasError={!!errors.symptoms}>{errors.symptoms?.message}</Error>
         </div>
 
         <input
           type="submit"
           className="bg-indigo-600 w-full p-3 text-white uppercase font-bold hover:bg-indigo-700 cursor-pointer transition-colors"
-          value={ !activeId ? 'Guardar Cambios' : 'Actualizar Cambios' }
+          value={!activeId ? "Guardar Cambios" : "Actualizar Cambios"}
         />
       </form>
     </div>
   );
 };
-
-// Aqui no se genera el id, la funcion toma la data pero la lleva al store, ahi es que se genera el id
-
-// Hay que revisar cuando activeId tenga algo. useEffect
-
-// setValue permite regresar un valor o setearlo por default al form

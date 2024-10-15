@@ -1,4 +1,7 @@
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/ReactToastify.css'
 import { PatientForm, PatientsList } from "./components";
+
 
 function App() {
   return (
@@ -14,8 +17,14 @@ function App() {
           <PatientsList />
         </div>
       </div>
+
+      <ToastContainer />
     </>
   );
 }
 
 export default App;
+
+// Primero se registra el componente de React-Toastify en el App.jsx
+// Luego se llaman las funciones donde queremos disparar los eventos de toastify
+// Para que se muestre en pantalla hay que definirle un estilo

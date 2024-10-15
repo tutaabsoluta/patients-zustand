@@ -1,8 +1,7 @@
-
-export const Error = ({ children }) => {
+export const Error = ({ children, hasError }) => {
   return (
-    <p className="text-center my-4 bg-red-600 text-white font-black p-3 text-sm rounded-md">
-        { children }
+    <p className={`mt-2 text-sm text-red-600 ${hasError ? 'visible' : 'invisible'}`}>
+      {children}
     </p>
-  )
-}
+  );
+};
